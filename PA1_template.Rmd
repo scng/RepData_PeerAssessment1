@@ -40,13 +40,15 @@ For this part of the assignment, we will ignore the missing values in the datase
     + Construct the histogram from data frame generated in Step 1 using [ggplot2][ggplot_url]
     ```{r}
     library(ggplot2)
-    ggplot(a2_sumSteps, aes(x=steps, fill=..count..)) + geom_histogram() + xlab("Total Number of Steps Taken per Day") + ylab("Count")
+    ggplot(a2_sumSteps, aes(x=steps, fill=..count..)) + geom_histogram() + xlab("Steps per Day") + ylab("Count") + ggtitle("Total Number of Steps Taken per Day")
     ```
 
 3. Calculate and report the mean and median of the total number of steps taken per day
     + Use [summary][summary_url] method to report the mean and median of the "Total number of steps taken per day" values
     ```{r}
-    summary(a2_sumSteps$steps)
+    s <- summary(a2_sumSteps$steps)
+    s["Mean"]
+    s["Median"]
     ```
 
 ## What is the average daily activity pattern?
@@ -55,7 +57,7 @@ For this part of the assignment, we will ignore the missing values in the datase
     + Construct a time series plot from the result calculated above using [ggplot2][ggplot_url]
     ```{r}
     a2_avgSteps <- aggregate(steps ~ interval, data=a2, FUN=mean)
-    ggplot(a2_avgSteps, aes(x=interval, y=steps)) + geom_line(col="blue")+ xlab("Intervals") + ylab("Number of steps")
+    ggplot(a2_avgSteps, aes(x=interval, y=steps)) + geom_line(col="blue")+ xlab("Intervals") + ylab("Number of steps") + ggtitle("Average Number of Steps For Each 5-min Interval Across All Days")
     ```
 
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
@@ -76,9 +78,11 @@ Note that there are a number of days/intervals where there are missing values (c
     ```
 
 2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
-    + The "the average number of steps for each interval across all days" data set generated in previous question will be reused to fill in the missing values. Print out the first 6 rows of that dataset for reference
+    + The "average number of steps for each interval across all days" data set generated in previous question will be reused to fill in the missing values. The data set is stored in dataframe namely "a2_avgSteps". 
+    + For example, if the steps value is "NA" for date "2012-10-01" and interval "0" in original dataset, this missing value will be filled up by average number of steps for interval "0" in a2_avgSteps. 
+    + Print the structure of "a2_avgSteps" for reference
     ```{r}
-    head(a2_avgSteps)
+    str(a2_avgSteps)
     ```
 
 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
@@ -95,15 +99,18 @@ Note that there are a number of days/intervals where there are missing values (c
 
 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
     + Reuse the steps in the first part of this assignment on the new dataset. A new histogram is generated, and the median and mean values are calculated.
-    + The median and mean values for the new dataset are the same : 10770. Compare to the median and mean values calculated in the first part (median=10760 and mean=10770), the median value has increased by 10 while the mean value remain the same
-    + There is not much impact on the estimates of the total daily number of steps after inputting the missing data
     ```{r}
     a3_sumSteps <- aggregate(steps ~ date, data=a3, FUN=sum)
     head(a3_sumSteps)
     library(ggplot2)
-    ggplot(a3_sumSteps, aes(x=steps, fill=..count..)) + geom_histogram() + xlab("Total Number of Steps Taken per Day") + ylab("Count")
-    summary(a3_sumSteps$steps)
+    ggplot(a3_sumSteps, aes(x=steps, fill=..count..)) + geom_histogram() + xlab("Steps per Day") + ylab("Count") + ggtitle("Total Number of Steps Taken per Day (with missing data filled)")
+    s <- summary(a3_sumSteps$steps)
+    s["Mean"]
+    s["Median"]
     ```
+    + The median and mean values for the new dataset are the same : 10770. Compare to the median and mean values calculated in the first part (median=10760 and mean=10770), the median value has increased by 10 while the mean value remain the same
+    + There is not much impact on the estimates of the total daily number of steps after inputting the missing data
+
 
 ## Are there differences in activity patterns between weekdays and weekends?
 For this part the weekdays() function may be of some help here. Use the dataset with the filled-in missing values for this part.
@@ -134,7 +141,7 @@ For this part the weekdays() function may be of some help here. Use the dataset 
     a3_avgSteps <- aggregate(a3$steps, by=list(a3$interval, a3$wkdayend), FUN=mean)
     names(a3_avgSteps) <- c("interval", "wkdayend", "steps")
     head(a3_avgSteps)
-    ggplot(a3_avgSteps, aes(x=interval, y=steps)) + geom_line(col="blue")+ xlab("intervals") + ylab("Number of steps") + facet_wrap(~wkdayend, ncol=1)
+    ggplot(a3_avgSteps, aes(x=interval, y=steps)) + geom_line(col="blue")+ xlab("intervals") + ylab("Number of steps") + facet_wrap(~wkdayend, ncol=1) + ggtitle("Average Number of Steps For Each 5-min Interval")
     ```
 
 [assignment_url]:https://class.coursera.org/repdata-013/human_grading/view/courses/973514/assessments/3/submissions
